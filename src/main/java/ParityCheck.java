@@ -126,6 +126,8 @@ public class ParityCheck {
             calculateCodewords();
         if (hammingDistance != -1)
             return hammingDistance;
+        if (validCodewords.size()<2)
+            return 0;
 
         int distance = hammingDistance(validCodewords.get(0), validCodewords.get(1));
         for (int i=0; i<validCodewords.size(); ++i) {
