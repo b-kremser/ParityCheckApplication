@@ -22,6 +22,7 @@ public class Application {
 
 
         System.out.println("Parity check matrix: " + parityCheckObject.getParityCheckMatrixAsString());
+        System.out.println("Hamming distance: " + parityCheckObject.getRank());
         System.out.println("Number of codewords: " + parityCheckObject.codewordAmount());
         System.out.println("Codewords: \n" + parityCheckObject.getValidCodewordsAsString());
     }

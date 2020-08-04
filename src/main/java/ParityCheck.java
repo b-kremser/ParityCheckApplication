@@ -60,6 +60,22 @@ public class ParityCheck {
         return sb.toString();
     }
 
+    public String getRank(){
+        if (validCodewords == null)
+            calculateCodewords();
+        int rank = Integer.MAX_VALUE;
+        for (int[][] codeword : validCodewords) {
+            int counter = 0;
+            for (int i=0; i<codeword.length-1; ++i) {
+                if (codeword[i][0] != 0)
+                    counter++;
+            }
+            if(counter > 0 && counter < rank)
+                rank = counter;
+        }
+        return String.valueOf(rank);
+    }
+
     public String getParityCheckMatrixAsString() {
         StringBuilder sb = new StringBuilder();
         sb.append("{");
