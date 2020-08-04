@@ -7,10 +7,10 @@ public class ParityCheck {
     private List<int[][]> validCodewords;
 
     /**
-     * Creates a CodeWordChecker-object that can perform multiple actions on a given parity check matrix, such as
+     * Creates a ParityCheck-object that can perform multiple actions on a given parity check matrix, such as
      * validating whether a codeword is valid or compute all possible codewords
      * @param parityCheckMatrixString a String that contains the parity check matrix in the Wolfram Alpha or Latex notation
-     * @param limit the upper bound of possible values (e.g. F2 = {0, 1}, so the limit = 2)
+     * @param limit the upper bound of possible values (e.g. for F2 = {0, 1}, limit = 2)
      */
     public ParityCheck(String parityCheckMatrixString, int limit) {
         parityCheckMatrix = parseMatrixString(parityCheckMatrixString, limit);
@@ -24,6 +24,9 @@ public class ParityCheck {
     }
 
     public boolean isValidCodeWord(int[][] codeword) {
+        if(!isValidMatrix(codeword) || codeword[0].length > 1)
+            return false;
+
         for (int[] parityRow : parityCheckMatrix) {
             int result = 0;
             for (int i=0; i<parityRow.length; ++i)
@@ -42,8 +45,17 @@ public class ParityCheck {
         return validCodewords.size();
     }
 
-    public List<int[][]> getValidCodewords() {
-        return validCodewords;
+    public String getOriginalInputInformationAsString(){
+        double originalSize = Math.log(codewordAmount()) / Math.log(limit); //log_{limit} (number of codewords)
+        int encodedSize = parityCheckMatrix[0].length;
+        StringBuilder sb = new StringBuilder();
+        sb.append("With the original generator matrix, a ").append((int) originalSize)
+                .append(" x 1-word was transformed into a ").append(encodedSize).append(" x 1-codeword.\n");
+
+        double informationRate = originalSize / encodedSize;
+        sb.append("The information rate is ").append((int) originalSize).append("/").append(encodedSize)
+                .append("=").append(informationRate).append("; redundancy is ").append(encodedSize - ((int)originalSize));
+        return sb.toString();
     }
 
     public String getValidCodewordsAsString() {
@@ -115,7 +127,7 @@ public class ParityCheck {
         throw new RuntimeException("Latex Strings are not supported yet");
     }
 
-    public static int[][] parseWolframAlphaMatrixString(String string, int limit){
+    private static int[][] parseWolframAlphaMatrixString(String string, int limit){
         String[] matrixRows = string.split("},\\{");
         int[][] matrixEntries = new int[matrixRows.length][];
 
