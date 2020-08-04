@@ -9,6 +9,10 @@ public class Application {
             if (args.length>=2) {
                 try {
                     limit = Integer.parseInt(args[1]);
+                    if (limit <= 1) {
+                        System.out.println("The limit has to be >= 2, so limit=2 will be used");
+                        limit = 2;
+                    }
                 } catch (Exception ignored){}
             }
             try {
@@ -25,6 +29,7 @@ public class Application {
         System.out.println("Rank of the parity check matrix: " + parityCheckObject.getRank());
         System.out.println(parityCheckObject.getOriginalInputInformationAsString());
         System.out.println("Number of codewords: " + parityCheckObject.codewordAmount());
+        System.out.println("Hamming Distance: " + parityCheckObject.getHammingDistance());
         System.out.println("Codewords: \n" + parityCheckObject.getValidCodewordsAsString());
     }
 }

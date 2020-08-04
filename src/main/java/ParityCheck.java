@@ -5,6 +5,8 @@ public class ParityCheck {
     private final int[][] parityCheckMatrix;
     private final int limit;
     private List<int[][]> validCodewords;
+    private int parityRank = -1;
+    int hammingDistance = -1;
 
     /**
      * Creates a ParityCheck-object that can perform multiple actions on a given parity check matrix, such as
@@ -72,9 +74,12 @@ public class ParityCheck {
         return sb.toString();
     }
 
-    public String getRank(){
+    public int getRank(){
         if (validCodewords == null)
             calculateCodewords();
+        if (parityRank != -1)
+            return parityRank;
+
         int rank = Integer.MAX_VALUE;
         for (int[][] codeword : validCodewords) {
             int counter = 0;
@@ -85,7 +90,8 @@ public class ParityCheck {
             if(counter > 0 && counter < rank)
                 rank = counter;
         }
-        return String.valueOf(rank);
+        parityRank = rank;
+        return rank;
     }
 
     public String getParityCheckMatrixAsString() {
@@ -113,6 +119,30 @@ public class ParityCheck {
             if (isValidCodeWord(codeword))
                 validCodewords.add(codeword);
         }
+    }
+
+    public int getHammingDistance() {
+        if (validCodewords == null)
+            calculateCodewords();
+        if (hammingDistance != -1)
+            return hammingDistance;
+
+        int distance = hammingDistance(validCodewords.get(0), validCodewords.get(1));
+        for (int i=0; i<validCodewords.size(); ++i) {
+            for (int j=i+1; j<validCodewords.size(); ++j)
+                distance = Integer.min(distance, hammingDistance(validCodewords.get(i), validCodewords.get(j)));
+        }
+        hammingDistance = distance;
+        return distance;
+    }
+
+    private int hammingDistance(int[][] firstVector, int[][] secondVector) {
+        int distance = 0;
+        for (int i=0; i<firstVector.length; ++i) {
+            if (firstVector[i][0] != secondVector[i][0])
+                distance++;
+        }
+        return distance;
     }
 
     private static int[][] parseMatrixString(String string, int limit) {
