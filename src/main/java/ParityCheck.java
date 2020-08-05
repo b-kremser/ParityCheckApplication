@@ -7,8 +7,7 @@ public class ParityCheck {
     private int[][] generatorMatrix;
     private final int limit;
     private List<int[][]> validCodewords;
-    private int parityRank = -1;
-    int hammingDistance = -1;
+    private int hammingDistance = -1;
 
     /**
      * Creates a ParityCheck-object that can perform multiple actions on a given parity check matrix, such as
@@ -72,26 +71,6 @@ public class ParityCheck {
             sb.append(codeword[codeword.length-1][0]).append(")\n");
         }
         return sb.toString();
-    }
-
-    public int getRank(){
-        if (validCodewords == null)
-            calculateCodewords();
-        if (parityRank != -1)
-            return parityRank;
-
-        int rank = parityCheckMatrix.length;
-        for (int[][] codeword : validCodewords) {
-            int counter = 0;
-            for (int i=0; i<codeword.length-1; ++i) {
-                if (codeword[i][0] != 0)
-                    counter++;
-            }
-            if(counter > 0 && counter < rank)
-                rank = counter;
-        }
-        parityRank = rank;
-        return rank;
     }
 
     public String getParityCheckMatrixAsString() {

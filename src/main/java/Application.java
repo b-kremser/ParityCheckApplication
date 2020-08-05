@@ -1,8 +1,8 @@
 public class Application {
     public static void main(String[] args) {
         //Those values are used if no valid arguments are in args
-        String parityCheckMatrixString = "{{1,1,1,1,0},{0,1,0,0,1}}";   //So far only Wolfram Alpha syntax is supported
-        int limit = 2;                                                  //the upper bound of possible values (e.g. for F2 = {0, 1}, limit = 2)
+        String parityCheckMatrixString = "{{0,1,1,1,1,0,0,0},{1,0,1,1,0,1,0,0},{1,1,0,1,0,0,1,0},{1,1,1,0,0,0,0,1}}";   //So far only Wolfram Alpha syntax is supported
+        int limit = 2;                         //the upper bound of possible values (e.g. for F2 = {0, 1}, limit = 2)
         ParityCheck parityCheckObject;
 
         if (args.length>=1) {
@@ -26,11 +26,10 @@ public class Application {
 
 
         System.out.println("Parity check matrix: " + parityCheckObject.getParityCheckMatrixAsString());
-        System.out.println("Rank of the parity check matrix: " + parityCheckObject.getRank());
         System.out.println("Original generator matrix: " + parityCheckObject.getGeneratorMatrixAsString());
         System.out.println(parityCheckObject.getOriginalInputInformationAsString());
-        System.out.println("Number of codewords: " + parityCheckObject.codewordAmount());
         System.out.println("Hamming Distance: " + parityCheckObject.getHammingDistance());
-        System.out.println("Codewords: \n" + parityCheckObject.getValidCodewordsAsString());
+        System.out.println("Number of valid codewords: " + parityCheckObject.codewordAmount());
+        System.out.println("Valid Codewords: \n" + parityCheckObject.getValidCodewordsAsString());
     }
 }
