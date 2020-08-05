@@ -1,7 +1,7 @@
 # ParityCheckApplication
 This application calculates valid codewords for a given parity check matrix and can provide useful information about the associated code
 
-####Features
+### Features
 <ul>
     <li>Compute Generator Matrix</li>
     <li>Generate all possible codewords</li>
