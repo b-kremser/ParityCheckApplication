@@ -1,8 +1,10 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ParityCheck {
     private final int[][] parityCheckMatrix;
+    private int[][] generatorMatrix;
     private final int limit;
     private List<int[][]> validCodewords;
     private int parityRank = -1;
@@ -50,14 +52,12 @@ public class ParityCheck {
     public String getOriginalInputInformationAsString(){
         double originalSize = Math.log(codewordAmount()) / Math.log(limit); //log_{limit} (number of codewords)
         int encodedSize = parityCheckMatrix[0].length;
-        StringBuilder sb = new StringBuilder();
-        sb.append("With the original generator matrix, a ").append((int) originalSize)
-                .append(" x 1-word was transformed into a ").append(encodedSize).append(" x 1-codeword.\n");
-
         double informationRate = originalSize / encodedSize;
-        sb.append("The information rate is ").append((int) originalSize).append("/").append(encodedSize)
-                .append("=").append(informationRate).append("; redundancy is ").append(encodedSize - ((int)originalSize));
-        return sb.toString();
+
+        return "With the original generator matrix, a " + (int) originalSize +
+                " x 1-word was transformed into a " + encodedSize + " x 1-codeword.\n" +
+                "The information rate is " + (int) originalSize + "/" + encodedSize +
+                "=" + informationRate + "; redundancy is " + (encodedSize - ((int) originalSize));
     }
 
     public String getValidCodewordsAsString() {
@@ -95,14 +95,27 @@ public class ParityCheck {
     }
 
     public String getParityCheckMatrixAsString() {
+        return getMatrixAsString(parityCheckMatrix);
+    }
+
+    public String getGeneratorMatrixAsString() {
+        if (generatorMatrix == null)
+            calculateGeneratorMatrix();
+        if (generatorMatrix == null) //checks whether calculating the generator matrix was successful
+            return "A valid generator matrix could not be calculated, but might still exist";
+        return getMatrixAsString(generatorMatrix);
+    }
+
+    private static String getMatrixAsString(int[][] matrix) {
         StringBuilder sb = new StringBuilder();
         sb.append("{");
-        for (int[] row : parityCheckMatrix) {
+        for (int[] row : matrix) {
             sb.append('{');
             for (int i=0; i<row.length-1; ++i)
                 sb.append(row[i]).append(",");
-            sb.append(row[row.length-1]).append("}");
+            sb.append(row[row.length-1]).append("},");
         }
+        sb.deleteCharAt(sb.lastIndexOf(","));
         sb.append("}");
         return sb.toString();
     }
@@ -118,6 +131,40 @@ public class ParityCheck {
             }
             if (isValidCodeWord(codeword))
                 validCodewords.add(codeword);
+        }
+    }
+
+    //generates the generator matrix if parity check matrix can be written as P=(-A | I ) where I is identity matrix
+    private void calculateGeneratorMatrix(){
+        if (validCodewords == null)
+            calculateCodewords();
+
+        //Original size = size of word before encoding
+        int originalSize = (int) (Math.log(codewordAmount()) / Math.log(limit)); //log_{limit} (number of codewords)
+
+        //Check if parity check matrix contains identity matrix
+        for (int i=0; i<parityCheckMatrix.length; ++i)
+            for (int j=originalSize; j<originalSize+parityCheckMatrix.length; ++j)
+                if ((i!=(j-originalSize) && parityCheckMatrix[i][j]!=0) || (i==(j-originalSize) && parityCheckMatrix[i][j]!=1))
+                    return;
+
+        generatorMatrix = new int[originalSize+parityCheckMatrix.length][];
+        //Fill in identity matrix at the top of generator matrix
+        for (int i=0; i<originalSize; ++i) {
+            generatorMatrix[i] = new int[originalSize];
+            Arrays.fill(generatorMatrix[i], 0);
+            generatorMatrix[i][i] = 1;
+        }
+
+        //calculate rest of the generator matrix
+        for (int i=0; i<parityCheckMatrix.length; ++i) {
+            generatorMatrix[originalSize+i] = new int[originalSize];
+            for (int j=0; j<originalSize; j++) {
+                generatorMatrix[i+originalSize][j] = (-1) * parityCheckMatrix[i][j];
+                generatorMatrix[i+originalSize][j] = generatorMatrix[i+originalSize][j]<0 ?
+                        (generatorMatrix[i+originalSize][j]%limit)+limit :
+                        generatorMatrix[i+originalSize][j] % limit;
+            }
         }
     }
 
