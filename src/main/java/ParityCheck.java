@@ -80,7 +80,7 @@ public class ParityCheck {
         if (parityRank != -1)
             return parityRank;
 
-        int rank = Integer.MAX_VALUE;
+        int rank = parityCheckMatrix.length;
         for (int[][] codeword : validCodewords) {
             int counter = 0;
             for (int i=0; i<codeword.length-1; ++i) {
@@ -107,6 +107,9 @@ public class ParityCheck {
     }
 
     private static String getMatrixAsString(int[][] matrix) {
+        if (matrix.length==0 || matrix[0].length==0)
+            return "{}";
+
         StringBuilder sb = new StringBuilder();
         sb.append("{");
         for (int[] row : matrix) {
@@ -143,10 +146,12 @@ public class ParityCheck {
         int originalSize = (int) (Math.log(codewordAmount()) / Math.log(limit)); //log_{limit} (number of codewords)
 
         //Check if parity check matrix contains identity matrix
-        for (int i=0; i<parityCheckMatrix.length; ++i)
-            for (int j=originalSize; j<originalSize+parityCheckMatrix.length; ++j)
-                if ((i!=(j-originalSize) && parityCheckMatrix[i][j]!=0) || (i==(j-originalSize) && parityCheckMatrix[i][j]!=1))
-                    return;
+        try {
+            for (int i = 0; i < parityCheckMatrix.length; ++i)
+                for (int j = originalSize; j < originalSize + parityCheckMatrix.length; ++j)
+                    if ((i != (j - originalSize) && parityCheckMatrix[i][j] != 0) || (i == (j - originalSize) && parityCheckMatrix[i][j] != 1))
+                        return;
+        } catch (Exception ignored) {return;} //for invalid parity check matrices, an array out of bounds exception might be thrown
 
         generatorMatrix = new int[originalSize+parityCheckMatrix.length][];
         //Fill in identity matrix at the top of generator matrix
