@@ -15,7 +15,9 @@ public class Application {
                         System.out.println("The limit has to be >= 2, so limit=2 will be used");
                         limit = 2;
                     }
-                } catch (Exception ignored){}
+                } catch (Exception ignored){
+                    System.out.println("Limit could not be parsed. Limit = 2 will be used.");
+                }
             }
             try {
                 parityCheckObject = new ParityCheck(args[0], limit);
