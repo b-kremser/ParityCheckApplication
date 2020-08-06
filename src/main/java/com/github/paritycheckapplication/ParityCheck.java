@@ -187,9 +187,10 @@ public class ParityCheck {
         return parseWolframAlphaMatrixString(string, limit);
     }
 
-    //Todo add LatexParser
     private static int[][] parseLatexMatrixString(String string, int limit) {
-        throw new RuntimeException("Latex Strings are not supported yet");
+        string = string.replace("\\begin{pmatrix}", "{{").replace("\\end{pmatrix}", "}}")
+                .replace("&", ",").replace("\\\\", "},{");
+        return parseWolframAlphaMatrixString(string, limit);
     }
 
     private static int[][] parseWolframAlphaMatrixString(String string, int limit){
