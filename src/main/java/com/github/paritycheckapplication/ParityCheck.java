@@ -1,3 +1,5 @@
+package com.github.paritycheckapplication;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
