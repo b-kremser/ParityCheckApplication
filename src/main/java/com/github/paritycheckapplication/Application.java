@@ -22,6 +22,8 @@ public class Application {
             try {
                 parityCheckObject = new ParityCheck(args[0], limit);
             } catch (Exception ignored) {
+                System.out.println("The matrix could not be parsed. Make sure to put it in quotation marks and refer to the readme" +
+                        " for example inputs");
                 parityCheckObject = new ParityCheck(parityCheckMatrixString, limit);
             }
         }

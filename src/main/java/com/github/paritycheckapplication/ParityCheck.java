@@ -194,6 +194,7 @@ public class ParityCheck {
     }
 
     private static int[][] parseWolframAlphaMatrixString(String string, int limit){
+        string = string.replace("(","{").replace(")","}");
         String[] matrixRows = string.split("},\\{");
         int[][] matrixEntries = new int[matrixRows.length][];
 
